@@ -1,0 +1,798 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Веб-презентация: Стив Джобс как лучший оратор. Анализ 4 выступлений по этосу, пафосу, логосу и невербальным средствам.">
+  <title>Стив Джобс: лучший оратор</title>
+  <style>
+    :root {
+      --paper: #f4f1ea;
+      --ink: #171713;
+      --muted: #696861;
+      --line: #d6d0c5;
+      --accent: #f06b35;
+      --accent-light: #ffb37d;
+      --violet: #754df4;
+      --night: #171713;
+      --night-muted: #c5c1b8;
+      --max: 1160px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; background: var(--paper); }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.45;
+      overflow-x: hidden;
+    }
+
+    a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+    a:hover { color: var(--accent); }
+    button { font: inherit; }
+
+    .topbar {
+      position: fixed;
+      z-index: 10;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 58px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 5vw;
+      color: #fff;
+      background: rgba(23, 23, 19, .92);
+      border-bottom: 1px solid rgba(255,255,255,.14);
+      backdrop-filter: blur(12px);
+    }
+
+    .brand { font-size: .74rem; letter-spacing: .15em; text-transform: uppercase; font-weight: 750; }
+    .counter { color: var(--night-muted); font-variant-numeric: tabular-nums; font-size: .82rem; }
+    .counter b { color: #fff; }
+
+    .progress { position: fixed; top: 58px; z-index: 11; width: 100%; height: 3px; background: transparent; }
+    .progress span { display: block; height: 100%; width: 11.11%; background: var(--accent); transition: width .25s ease; }
+
+    .dots {
+      position: fixed;
+      z-index: 10;
+      right: max(20px, calc((100vw - var(--max)) / 2 - 48px));
+      top: 50%;
+      display: grid;
+      gap: 11px;
+      transform: translateY(-50%);
+    }
+    .dot {
+      appearance: none;
+      width: 9px;
+      height: 9px;
+      padding: 0;
+      cursor: pointer;
+      border-radius: 50%;
+      border: 1px solid rgba(23,23,19,.48);
+      background: transparent;
+      transition: transform .18s ease, background .18s ease;
+    }
+    .dot:hover, .dot:focus-visible { transform: scale(1.35); outline: none; }
+    .dot.active { background: var(--accent); border-color: var(--accent); }
+
+    .slide {
+      position: relative;
+      min-height: max(720px, 100svh);
+      padding: 102px 7vw 74px;
+      display: grid;
+      align-content: center;
+      scroll-snap-align: start;
+      overflow: hidden;
+    }
+    .slide::before { content: ""; position: absolute; z-index: 0; width: 42vw; height: 42vw; max-width: 620px; max-height: 620px; right: -21vw; top: -19vw; border-radius: 50%; background: radial-gradient(circle, rgba(240,107,53,.12), rgba(240,107,53,0) 68%); pointer-events: none; }
+    .slide-inner { position: relative; z-index: 1; width: min(100%, var(--max)); margin: 0 auto; opacity: 1; transform: none; }
+    .eyebrow {
+      margin: 0 0 18px;
+      color: var(--accent);
+      font-size: .75rem;
+      font-weight: 800;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+    }
+    h1, h2, h3, p { margin-top: 0; }
+    h1, h2, h3 { letter-spacing: -.045em; line-height: .98; }
+    h1 { max-width: 900px; margin-bottom: 28px; font-size: clamp(3.45rem, 9vw, 8.5rem); font-weight: 780; }
+    h2 { max-width: 830px; margin-bottom: 30px; font-size: clamp(2.3rem, 4.9vw, 5.2rem); font-weight: 760; }
+    h3 { margin-bottom: 9px; font-size: clamp(1.35rem, 2vw, 1.85rem); font-weight: 720; }
+    .lede { max-width: 690px; font-size: clamp(1.12rem, 1.8vw, 1.45rem); color: var(--muted); }
+    .footnote { max-width: 830px; margin-top: 30px; color: var(--muted); font-size: .78rem; line-height: 1.45; }
+    .slide-num { position: absolute; right: 7vw; bottom: 25px; color: var(--muted); font-size: .8rem; font-variant-numeric: tabular-nums; }
+
+    .hero { color: #fff; background: radial-gradient(circle at 78% 15%, #4d1f1d 0, transparent 30%), radial-gradient(circle at 72% 75%, #2a215c 0, transparent 37%), var(--night); }
+    .hero::after {
+      content: "JOBS";
+      position: absolute;
+      z-index: 0;
+      right: -2vw;
+      bottom: -9vw;
+      color: rgba(255,255,255,.045);
+      font-size: min(35vw, 540px);
+      line-height: .7;
+      font-weight: 900;
+      letter-spacing: -.1em;
+      pointer-events: none;
+    }
+    .hero .slide-inner { position: relative; z-index: 1; }
+    .hero .hero-photo { position: absolute; z-index: 0; right: 2vw; bottom: 0; width: min(46vw, 650px); height: 88%; object-fit: cover; object-position: center top; opacity: .82; mix-blend-mode: screen; -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 28%, #000 82%, transparent 100%); mask-image: linear-gradient(to right, transparent 0%, #000 28%, #000 82%, transparent 100%); pointer-events: none; }
+    .hero .slide-inner { max-width: var(--max); margin-left: max(7vw, calc((100vw - var(--max)) / 2)); margin-right: auto; }
+    .fullscreen-btn { display: inline-flex; align-items: center; gap: 8px; border: 1px solid rgba(255,255,255,.28); border-radius: 999px; padding: 8px 13px; color: #fff; background: rgba(255,255,255,.08); cursor: pointer; font-size: .82rem; }
+    .fullscreen-btn:hover, .fullscreen-btn:focus-visible { background: rgba(255,255,255,.18); outline: 2px solid var(--accent-light); outline-offset: 2px; }
+    .fullscreen-btn svg { width: 15px; height: 15px; }
+    .topbar-actions { display:flex; align-items:center; gap:16px; }
+    body:fullscreen { overflow-y: auto; }
+    @media (max-width: 760px) { .hero .hero-photo { width: 65vw; height: 55%; right: -7vw; opacity: .48; } .hero .slide-inner { margin-left: auto; } .topbar-actions { gap: 8px; } .fullscreen-btn { padding: 7px 9px; font-size: .72rem; } }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; } }
+    .hero .lede { max-width: 710px; color: var(--night-muted); }
+    .hero .quote {
+      max-width: 790px;
+      margin: 45px 0 0;
+      color: #fff;
+      font-size: clamp(1.35rem, 2.6vw, 2.2rem);
+      letter-spacing: -.025em;
+      line-height: 1.15;
+    }
+    .hero .quote::before { content: "«"; color: var(--accent); }
+    .hero .quote::after { content: "»"; color: var(--accent); }
+    .hero .footnote, .hero .slide-num { color: var(--night-muted); }
+
+    .grid { display: grid; gap: 22px; }
+    .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .rule { border-top: 1px solid var(--line); }
+    .item { padding: 20px 0 2px; }
+    .item p { color: var(--muted); }
+    .item strong { color: var(--accent); font-size: .9rem; }
+    .stat { display: block; margin-bottom: 6px; color: var(--accent); font-size: clamp(2rem, 4vw, 3.65rem); font-weight: 760; line-height: 1; letter-spacing: -.06em; }
+
+    .method .lead-claim { max-width: 860px; margin: 0 0 40px; font-size: clamp(1.3rem, 2.4vw, 2rem); letter-spacing: -.035em; line-height: 1.12; }
+    .method .item { min-height: 198px; }
+    .method .item p { margin-bottom: 0; }
+
+    .roadmap { background: #e9e4db; }
+    .talk-card { position: relative; padding: 22px 0 18px; border-top: 1px solid #bbb4a8; transition: transform .3s ease, color .3s ease; }
+    .talk-card:hover { transform: translateY(-7px); }
+    .talk-card a { display: inline-flex; gap: 7px; align-items: center; text-decoration: none; }
+    .talk-card a::after { content: "↓"; color: var(--accent); font-weight: 800; }
+    .talk-card p { margin: 0; color: var(--muted); }
+    .talk-year { color: var(--accent); font-weight: 800; font-size: .82rem; letter-spacing: .08em; }
+
+    .speech { background: #fffdf9; }
+    .speech-layout { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(280px, .65fr); gap: clamp(34px, 8vw, 104px); align-items: start; }
+    .speech-title { margin-bottom: 15px; font-size: clamp(2.65rem, 5.8vw, 6.5rem); }
+    .tag { display: inline-block; margin: 0 5px 8px 0; padding: 5px 8px 4px; color: var(--accent); border: 1px solid color-mix(in srgb, var(--accent) 50%, transparent); border-radius: 999px; font-size: .7rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+    .quote-block { margin: 27px 0; padding-left: 20px; border-left: 3px solid var(--accent); font-size: clamp(1.25rem, 2.2vw, 1.85rem); font-weight: 580; line-height: 1.14; letter-spacing: -.025em; }
+    .analysis-list { display: grid; gap: 17px; margin-top: 32px; }
+    .analysis-list article { padding-top: 14px; border-top: 1px solid var(--line); }
+    .analysis-list h3 { margin-bottom: 5px; font-size: 1rem; letter-spacing: 0; }
+    .analysis-list p { margin-bottom: 0; color: var(--muted); font-size: .96rem; }
+    .video-wrap { position: sticky; top: 83px; }
+    .video { overflow: hidden; aspect-ratio: 16 / 9; background: #111; box-shadow: 0 17px 36px rgba(23,23,19,.15); }
+    .video iframe { width: 100%; height: 100%; border: 0; }
+    .video-caption { margin: 11px 0 0; color: var(--muted); font-size: .78rem; }
+    .video-caption a { color: var(--muted); }
+    .watch-prompt { position: sticky; top: 102px; padding: 29px 0 26px; border-top: 1px solid var(--ink); border-bottom: 1px solid var(--line); }
+    .watch-prompt .eyebrow { margin-bottom: 42px; }
+    .watch-prompt h3 { max-width: 240px; margin-bottom: 17px; font-size: clamp(1.65rem, 2.4vw, 2.4rem); }
+    .watch-prompt p { max-width: 290px; color: var(--muted); }
+    .watch-link { display: inline-flex; align-items: center; gap: 12px; margin-top: 10px; padding: 12px 0; color: var(--ink); border: 0; border-bottom: 2px solid var(--accent); text-decoration: none; font-weight: 760; transition: gap .25s ease, color .25s ease; }
+    .watch-link::after { content: "→"; color: var(--accent); font-size: 1.22rem; }
+    .watch-link:hover { gap: 19px; color: var(--accent); }
+    .videos { color: #fff; background: linear-gradient(132deg, #1d1b19, #211634 58%, #44201d); }
+    .videos::before { right: -13vw; top: auto; bottom: -24vw; width: 70vw; height: 70vw; max-width: none; max-height: none; background: radial-gradient(circle, rgba(240,107,53,.2), rgba(240,107,53,0) 64%); }
+    .videos .lede { color: var(--night-muted); }
+    .video-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 34px; }
+    .video-card { position: relative; min-height: 180px; display: flex; flex-direction: column; justify-content: flex-end; padding: 23px; overflow: hidden; color: #fff; border: 1px solid rgba(255,255,255,.23); background: rgba(255,255,255,.055); text-decoration: none; transition: transform .35s cubic-bezier(.2,.65,.2,1), background .35s ease, border-color .35s ease; }
+    .video-card::before { content: "▶"; position: absolute; top: 21px; right: 23px; color: var(--accent-light); font-size: 1.28rem; transition: transform .35s ease; }
+    .video-card::after { content: ""; position: absolute; width: 160px; height: 160px; top: -90px; left: -62px; border-radius: 50%; background: var(--accent); opacity: .16; transition: transform .5s ease; }
+    .video-card:hover { transform: translateY(-7px); color: #fff; background: rgba(255,255,255,.11); border-color: var(--accent-light); }
+    .video-card:hover::before { transform: scale(1.18); }
+    .video-card:hover::after { transform: scale(1.8); }
+    .video-card span, .video-card h3, .video-card p { position: relative; z-index: 1; }
+    .video-card span { color: var(--accent-light); font-size: .73rem; font-weight: 800; letter-spacing: .12em; }
+    .video-card h3 { margin: 7px 0 4px; font-size: clamp(1.5rem, 2.5vw, 2.25rem); }
+    .video-card p { margin: 0; color: var(--night-muted); font-size: .9rem; }
+
+    .synthesis { color: #fff; background: var(--night); }
+    .synthesis .lede, .synthesis .item p { color: var(--night-muted); }
+    .synthesis .rule, .synthesis .analysis-list article { border-color: rgba(255,255,255,.18); }
+    .synthesis h3 { color: #fff; }
+    .matrix { margin-top: 34px; }
+    .matrix-row { display: grid; grid-template-columns: 148px 1fr 1fr; gap: 22px; padding: 16px 0; border-top: 1px solid rgba(255,255,255,.2); }
+    .matrix-row p { margin: 0; color: var(--night-muted); }
+    .matrix-row b { color: var(--accent); }
+    .answer { margin-top: 36px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,.2); color: #fff; font-size: clamp(1.1rem, 1.8vw, 1.4rem); }
+    .answer span { color: var(--accent); font-weight: 800; }
+
+    .conclusion { background: #f0ede7; }
+    .conclusion .key-claim { max-width: 950px; margin: 0 0 38px; font-size: clamp(1.55rem, 3.4vw, 3.2rem); font-weight: 620; line-height: 1.08; letter-spacing: -.04em; }
+    .lesson { padding-top: 18px; border-top: 1px solid #bcb5aa; }
+    .lesson p { margin-bottom: 0; color: var(--muted); }
+
+    .sources { min-height: auto; padding-bottom: 96px; }
+    .sources h2 { margin-bottom: 20px; }
+    .source-list { counter-reset: source; max-width: 1040px; padding: 0; margin: 0; list-style: none; }
+    .source-list li { position: relative; padding: 15px 0 15px 45px; border-top: 1px solid var(--line); color: var(--muted); }
+    .source-list li::before { counter-increment: source; content: counter(source, decimal-leading-zero); position: absolute; left: 0; color: var(--accent); font-weight: 800; font-variant-numeric: tabular-nums; }
+    .source-list a { color: var(--ink); }
+    .disclosure { margin-top: 30px; color: var(--muted); font-size: .8rem; }
+
+    .next {
+      position: absolute;
+      right: 7vw;
+      bottom: 22px;
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      border: 0;
+      color: var(--muted);
+      background: transparent;
+      cursor: pointer;
+      font-size: .75rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .next::after { content: "↓"; color: var(--accent); font-size: 1.2rem; }
+    .next:hover { color: var(--accent); }
+    .next:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+
+    @media (max-width: 780px) {
+      .topbar { padding: 0 24px; }
+      .slide { min-height: auto; padding: 96px 24px 86px; }
+      .grid-2, .grid-3, .grid-4, .speech-layout, .video-grid { grid-template-columns: 1fr; }
+      .dots { display: none; }
+      .slide-num, .next { right: 24px; }
+      .speech-layout { gap: 28px; }
+      .video-wrap, .watch-prompt { position: static; order: -1; }
+      .matrix-row { grid-template-columns: 1fr; gap: 7px; padding: 18px 0; }
+      .method .item { min-height: 0; }
+      .hero { min-height: 100svh; }
+    }
+
+    @keyframes float-orb { 0%, 100% { transform: translate3d(0, 0, 0) scale(1); } 50% { transform: translate3d(-32px, 24px, 0) scale(1.1); } }
+    @keyframes glow-pulse { 0%, 100% { opacity: .38; } 50% { opacity: .78; } }
+    @keyframes reveal-up { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+    @media (prefers-reduced-motion: no-preference) {
+      .hero::after { animation: glow-pulse 7s ease-in-out infinite; }
+      .slide::before { animation: float-orb 13s ease-in-out infinite; }
+    }
+    .topbar { height: 62px; background: rgba(18, 17, 24, .72); border-bottom-color: rgba(255,255,255,.13); box-shadow: 0 10px 34px rgba(0,0,0,.12); }
+    .progress { top: 62px; height: 2px; background: rgba(255,255,255,.11); }
+    .progress span { background: linear-gradient(90deg, var(--accent), var(--violet), var(--accent-light)); box-shadow: 0 0 16px rgba(240,107,53,.65); }
+    .dots { padding: 10px 8px; border: 1px solid rgba(23,23,19,.12); border-radius: 999px; background: rgba(244,241,234,.55); box-shadow: 0 12px 28px rgba(23,23,19,.08); backdrop-filter: blur(12px); }
+    .dot { width: 8px; height: 8px; border-color: rgba(23,23,19,.35); }
+    .dot.active { transform: scale(1.35); background: linear-gradient(135deg, var(--accent), var(--violet)); border-color: transparent; box-shadow: 0 0 10px rgba(117,77,244,.38); }
+    .hero .quote { text-shadow: 0 9px 28px rgba(0,0,0,.22); }
+    .talk-card a, .watch-link { text-decoration: none; }
+    .talk-card:hover h3 { color: var(--violet); }
+    .tag { background: rgba(240,107,53,.055); transition: transform .25s ease, background .25s ease; }
+    .tag:hover { transform: translateY(-2px); background: rgba(240,107,53,.13); }
+    .analysis-list article { transition: padding-left .3s ease, border-color .3s ease; }
+    .analysis-list article:hover { padding-left: 10px; border-color: var(--accent); }
+    .watch-prompt { border-top-color: var(--violet); }
+    .watch-link { border-bottom: 0; padding: 12px 16px; color: #fff; border-radius: 999px; background: linear-gradient(115deg, var(--accent), var(--violet)); box-shadow: 0 10px 23px rgba(117,77,244,.2); }
+    .watch-link::after { color: #fff; }
+    .watch-link:hover { color: #fff; gap: 16px; transform: translateY(-2px); box-shadow: 0 15px 30px rgba(117,77,244,.31); }
+    .video-grid.single-video { grid-template-columns: minmax(0, 1fr); max-width: 920px; }
+    .video-card.featured { min-height: 335px; padding: clamp(28px, 5vw, 58px); border-radius: 24px; background: radial-gradient(circle at 82% 18%, rgba(240,107,53,.34), transparent 30%), radial-gradient(circle at 20% 120%, rgba(117,77,244,.45), transparent 42%), rgba(255,255,255,.07); box-shadow: 0 30px 70px rgba(0,0,0,.25); }
+    .video-card.featured::before { top: 32px; right: 38px; display: grid; place-items: center; width: 58px; height: 58px; border: 1px solid rgba(255,255,255,.48); border-radius: 50%; background: rgba(255,255,255,.1); font-size: 1.35rem; }
+    .video-card.featured::after { width: 310px; height: 310px; top: -165px; left: auto; right: -70px; opacity: .11; }
+    .video-card.featured h3 { max-width: 680px; font-size: clamp(2.3rem, 5vw, 5.1rem); line-height: .94; }
+    .video-card.featured p { max-width: 530px; font-size: 1rem; }
+    .videos .footnote { color: rgba(255,255,255,.68); }
+    .local-video-card { display: block; min-height: 0; }
+    .local-video-card::before { display: none; }
+    .local-video-card h3 { margin-bottom: 10px; }
+    .local-video-frame { position: relative; z-index: 1; margin-top: 28px; overflow: hidden; border: 1px solid rgba(255,255,255,.22); border-radius: 16px; background: #09080d; box-shadow: 0 22px 45px rgba(0,0,0,.28); }
+    .local-video-frame video { display: block; width: 100%; aspect-ratio: 16 / 9; background: #000; object-fit: contain; }
+
+    .triad { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin-top:24px; }
+    .triad p { margin:0; padding:12px; border:1px solid var(--line); border-radius:12px; color:var(--muted); font-size:.84rem; }
+    .triad b { display:block; margin-bottom:4px; color:var(--accent); }
+    .speech-video { overflow:hidden; aspect-ratio:16/9; border-radius:14px; background:#08080b; box-shadow:0 16px 34px rgba(23,23,19,.16); }
+    .speech-video iframe, .speech-video video { display:block; width:100%; height:100%; border:0; object-fit:contain; }
+
+    .local-video-note { padding: 22px; border: 1px solid var(--line, rgba(128,128,128,.3)); border-radius: 14px; background: rgba(128,128,128,.07); }
+    .local-video-note p { margin: 0 0 18px; line-height: 1.65; }
+    .button-link { display: inline-flex; align-items: center; gap: 8px; padding: 11px 15px; border-radius: 999px; background: var(--ink, #171717); color: white !important; text-decoration: none; font-size: .86rem; font-weight: 700; }
+    .button-link:focus-visible { outline: 3px solid var(--accent, #f06b35); outline-offset: 3px; }
+
+    .speech-video-prompt { position:static; padding-top:18px; }
+    .speech-video-prompt .eyebrow { margin-bottom:12px; }
+    .speech-video-prompt h3 { max-width:none; font-size:1.35rem; }
+    .speech-video-prompt .video-caption { font-size:.78rem; line-height:1.5; }
+    .team-line { padding:12px 14px; border:1px solid rgba(255,255,255,.18); border-radius:12px; }
+    .dot:focus-visible { outline:3px solid var(--accent); outline-offset:4px; }
+    @media (max-width:780px) { .triad { grid-template-columns:1fr; } .speech-video-prompt { order:0; } }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior:auto !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; } }
+
+    @media print {
+      .topbar, .progress, .dots, .next { display: none; }
+      .slide { min-height: 100vh; break-after: page; padding: 42px; }
+      .video { display: none; }
+      .video-caption { color: var(--ink); }
+    }
+
+
+    /* Apple-inspired compact presentation layout */
+    :root { --paper:#080808; --ink:#f5f5f7; --muted:#b2b2b7; --line:#303034; --accent:#f5f5f7; --accent-light:#d5d5da; --violet:#888891; --night:#050505; --night-muted:#b8b8be; --max:1180px; }
+    html, body { background:#050505; color:#f5f5f7; }
+    body { background:#050505; }
+    .topbar { left:188px; width:calc(100% - 188px); height:54px; padding:0 28px; background:rgba(9,9,10,.94); border-bottom:1px solid #29292d; box-shadow:none; }
+    .brand { letter-spacing:.12em; }
+    .progress { top:54px; left:188px; width:calc(100% - 188px); height:2px; }
+    .dots { position:fixed; left:0; right:auto; top:0; bottom:0; width:188px; height:100vh; transform:none; display:flex; flex-direction:column; justify-content:center; gap:5px; padding:72px 9px 18px; border:0; border-right:1px solid #252528; border-radius:0; background:#09090a; box-shadow:none; backdrop-filter:none; overflow-y:auto; }
+    .dots::before { content:"Стив Джобс"; position:absolute; top:20px; left:22px; right:12px; color:#f5f5f7; font-size:15px; font-weight:700; letter-spacing:.02em; white-space:nowrap; }
+    .dot { width:100%; height:35px; min-height:35px; border:1px solid transparent; border-radius:9px; background:transparent; position:relative; transform:none !important; }
+    .dot::before { content:attr(aria-label); position:absolute; left:37px; top:50%; transform:translateY(-50%); color:#a1a1a6; font-size:12px; white-space:nowrap; }
+    .dot:nth-child(1)::before { content:"Главная"; } .dot:nth-child(2)::before { content:"О Стиве Джобсе"; } .dot:nth-child(3)::before { content:"Риторические приёмы"; } .dot:nth-child(4)::before { content:"Презентация iPod (2001)"; } .dot:nth-child(5)::before { content:"Речь в Стэнфорде (2005)"; } .dot:nth-child(6)::before { content:"Презентация iPhone (2007)"; } .dot:nth-child(7)::before { content:"Презентация iPad (2010)"; } .dot:nth-child(8)::before { content:"Ключевые техники"; } .dot:nth-child(9)::before { content:"Наши выводы"; } .dot:nth-child(10)::before { content:"Источники"; }
+    .dot::after { content:attr(data-number); position:absolute; left:8px; top:50%; transform:translateY(-50%); width:22px; height:22px; display:grid; place-items:center; border:1px solid #3c3c40; border-radius:50%; color:#ddd; font-size:10px; }
+    .dot:nth-child(1)::after { content:"1"; } .dot:nth-child(2)::after { content:"2"; } .dot:nth-child(3)::after { content:"3"; } .dot:nth-child(4)::after { content:"4"; } .dot:nth-child(5)::after { content:"5"; } .dot:nth-child(6)::after { content:"6"; } .dot:nth-child(7)::after { content:"7"; } .dot:nth-child(8)::after { content:"8"; } .dot:nth-child(9)::after { content:"9"; } .dot:nth-child(10)::after { content:"10"; }
+    .dot.active { background:#242427; border-color:#3a3a3e; box-shadow:none; }
+    .dot.active::before { color:#fff; font-weight:650; } .dot.active::after { background:#f5f5f7; color:#111; border-color:#f5f5f7; }
+    .slide { min-height:100svh; padding:82px clamp(28px,5vw,76px) 54px; margin-left:188px; background:#080808; color:#f5f5f7; align-content:center; scroll-margin-top:54px; }
+    .slide::before { display:none; }
+    .slide-inner { width:min(100%,1180px); }
+    .slide-num { color:#77777d; bottom:15px; right:30px; }
+    h1 { max-width:760px; font-size:clamp(3rem,6.5vw,6.2rem); margin-bottom:20px; }
+    h2 { font-size:clamp(2.1rem,4vw,4.2rem); margin-bottom:22px; }
+    h3 { font-size:clamp(1.2rem,1.7vw,1.65rem); }
+    .eyebrow { font-size:.7rem; letter-spacing:.17em; color:#a1a1a6; margin-bottom:14px; }
+    .lede,.item p,.analysis-list p,.footnote,.video-caption,.lesson p,.source-list li { color:#b4b4b9; }
+    .hero { background:#050505; }
+    .hero::after { color:rgba(255,255,255,.025); }
+    .hero .hero-photo { width:min(47vw,650px); height:88%; right:1vw; opacity:.86; mix-blend-mode:normal; -webkit-mask-image:linear-gradient(to right,transparent 0%,#000 24%,#000 82%,transparent 100%); mask-image:linear-gradient(to right,transparent 0%,#000 24%,#000 82%,transparent 100%); }
+    .hero .slide-inner { margin-left:0; max-width:800px; }
+    .hero .lede { max-width:580px; color:#b4b4b9; font-size:clamp(1rem,1.35vw,1.2rem); }
+    .hero .quote { max-width:670px; margin-top:26px; font-size:clamp(1.05rem,1.8vw,1.55rem); line-height:1.2; }
+    .hero .quote::before,.hero .quote::after { color:#a1a1a6; }
+    .hero .footnote { font-size:.68rem; margin-top:15px; max-width:660px; }
+    .method,.roadmap,.speech,.conclusion { background:#080808; color:#f5f5f7; }
+    .roadmap { background:#0c0c0e; }
+    .speech-layout { grid-template-columns:minmax(0,1.25fr) minmax(250px,.75fr); gap:clamp(24px,4vw,60px); align-items:start; }
+    .speech-title { font-size:clamp(2.2rem,4.7vw,4.6rem); line-height:1.02; margin-bottom:12px; }
+    .quote-block { font-size:clamp(1.15rem,1.8vw,1.55rem); margin:20px 0; }
+    .analysis-list { gap:10px; margin-top:20px; }
+    .analysis-list article { padding-top:10px; }
+    .analysis-list p { font-size:.86rem; line-height:1.4; }
+    .analysis-list h3 { color:#f5f5f7; }
+    .tag { color:#f5f5f7; border-color:#55555b; background:#18181a; }
+    .watch-prompt { position:static; padding:20px; border:1px solid #303034; border-radius:16px; background:#111113; }
+    .watch-prompt .eyebrow { margin-bottom:20px; }
+    .watch-prompt h3 { max-width:none; font-size:1.45rem; }
+    .watch-prompt p { max-width:none; color:#b4b4b9; }
+    .watch-link { background:#f5f5f7; color:#111 !important; box-shadow:none; }
+    .watch-link::after { color:#111; }
+    .synthesis,.videos { background:#080808; color:#f5f5f7; }
+    .synthesis .lede,.synthesis .item p,.videos .lede { color:#b4b4b9; }
+    .grid { gap:16px; }
+    .item { padding-top:15px; }
+    .stat { color:#f5f5f7; font-size:clamp(1.7rem,3vw,2.8rem); }
+    .talk-card { border-color:#303034; }
+    .talk-card p { color:#b4b4b9; }
+    .video-card { background:#111113; border-color:#303034; }
+    .video-card h3 { color:#f5f5f7; }
+    .video-card p { color:#b4b4b9; }
+    .local-video-frame { margin-top:18px; }
+    .source-list li { border-color:#303034; }
+    .source-list a { color:#f5f5f7; }
+    .rule,.analysis-list article { border-color:#303034; }
+    .next { color:#a1a1a6; }
+    .next::after { color:#f5f5f7; }
+    .fullscreen-btn { background:#171719; border-color:#45454a; }
+    .fullscreen-btn:hover { background:#28282b; }
+    .conclusion .key-claim { font-size:clamp(1.5rem,3vw,2.7rem); }
+    @media (max-height:850px) and (min-width:781px) {
+      .slide { padding-top:74px; padding-bottom:42px; }
+      .speech-title { font-size:clamp(2rem,4.2vw,4rem); }
+      .analysis-list { gap:7px; margin-top:14px; }
+      .analysis-list p { font-size:.8rem; }
+      .analysis-list article { padding-top:8px; }
+      .quote-block { margin:15px 0; }
+      .method .lead-claim { margin-bottom:22px; font-size:clamp(1.15rem,2vw,1.65rem); }
+      .method .item { min-height:0; }
+      .video-grid { margin-top:20px; }
+      .video-card.featured { min-height:240px; }
+    }
+    @media (max-width:780px) {
+      .topbar { left:0; width:100%; padding:0 16px; }
+      .progress { left:0; width:100%; }
+      .dots { display:none; }
+      .slide { margin-left:0; min-height:100svh; padding:84px 22px 70px; }
+      .hero .hero-photo { width:72vw; height:53%; right:-10vw; opacity:.42; }
+      .hero .slide-inner { margin-left:0; }
+      .speech-layout { grid-template-columns:1fr; }
+      .watch-prompt { order:0; }
+    }
+
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <span class="brand">Стив Джобс</span>
+    <div class="topbar-actions"><span class="counter"><b id="current-slide">01</b> / 10</span><button class="fullscreen-btn" id="fullscreen-toggle" type="button" aria-label="Развернуть сайт на весь экран" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M8 3H3v5M16 3h5v5M21 16v5h-5M3 16v5h5"/></svg><span>На весь экран</span></button></div>
+  </header>
+  <div class="progress" aria-hidden="true"><span id="progress-fill"></span></div>
+  <nav class="dots" aria-label="Навигация по презентации">
+    <button class="dot active" data-target="cover" aria-label="Слайд 1"></button>
+    <button class="dot" data-target="method" aria-label="Слайд 2"></button>
+    <button class="dot" data-target="roadmap" aria-label="Слайд 3"></button>
+    <button class="dot" data-target="ipod" aria-label="Слайд 4"></button>
+    <button class="dot" data-target="stanford" aria-label="Слайд 5"></button>
+    <button class="dot" data-target="iphone" aria-label="Слайд 6"></button>
+    <button class="dot" data-target="ipad" aria-label="Слайд 7"></button>
+    <button class="dot" data-target="synthesis" aria-label="Слайд 8"></button>
+    <button class="dot" data-target="videos" aria-label="Слайд 9"></button>
+    <button class="dot" data-target="sources" aria-label="Слайд 10"></button>
+  </nav>
+
+  <main>
+    <section class="slide hero" id="cover" data-index="1">
+      <img class="hero-photo" src="media/steve-jobs-hero.jpg" alt="Портрет Стива Джобса" loading="eager">
+      <div class="slide-inner">
+        <p class="eyebrow">Анализ публичных выступлений</p>
+        <h1>Стив Джобс<br>как лучший оратор</h1>
+        <p class="lede">Четыре выступления, один принцип: сложную идею легче принять, когда спикер превращает её в ясную человеческую историю. Исследование анализирует риторические приёмы и наблюдаемые элементы подачи.</p>
+        <p class="quote">Ваша работа заполнит большую часть жизни… единственный способ делать великие дела — любить то, что вы делаете</p>
+        <p class="footnote">Источник цитаты: Stanford Commencement Address, 12 июня 2005 года. Формулировка дана в русском переводе; оригинальный текст приведён в разделе Stanford.</p><p class="footnote team-line"><strong>Команда:</strong> Нуржау Нурхан — вступление, анализ Stanford и заключение · Нурсултан Рассулов — анализ презентаций iPod, iPhone и iPad. Оба участника отвечают на вопросы аудитории.</p>
+      </div>
+      <span class="slide-num">01</span>
+      <button class="next" data-next="method">Далее</button>
+    </section>
+
+    <section class="slide method" id="method" data-index="2">
+      <div class="slide-inner">
+        <p class="eyebrow">Цель и метод</p>
+        <h2>Почему именно Джобс?</h2>
+        <p class="lead-claim">Мы доказываем, что Джобс убеждает не одной харизмой. Он последовательно соединяет доверие к себе, эмоцию аудитории и понятное доказательство.</p>
+        <div class="grid grid-3 rule">
+          <article class="item">
+            <span class="stat">Этос</span>
+            <h3>Кто говорит?</h3>
+            <p>Экспертность создает опыт создателя продукта. Честный рассказ о неудаче делает его ближе к слушателю.</p>
+          </article>
+          <article class="item">
+            <span class="stat">Пафос</span>
+            <h3>Что чувствует зал?</h3>
+            <p>Личная история, пауза перед развязкой и момент раскрытия продукта создают интерес, сочувствие или радость.</p>
+          </article>
+          <article class="item">
+            <span class="stat">Логос</span>
+            <h3>Почему верить?</h3>
+            <p>Цифры переводятся в бытовую пользу. Сравнение и демонстрация помогают аудитории самой увидеть вывод.</p>
+          </article>
+        </div>
+        <p class="footnote">Этос, пафос и логос рассматриваются как способы убеждения. Определения: <a href="https://owl.purdue.edu/owl/general_writing/academic_writing/rhetorical_situation/aristotles_rhetorical_situation.html" target="_blank" rel="noreferrer">Purdue OWL, Aristotle’s Rhetorical Situation</a>.</p>
+      </div>
+      <span class="slide-num">02</span>
+      <button class="next" data-next="roadmap">Далее</button>
+    </section>
+
+    <section class="slide roadmap" id="roadmap" data-index="3">
+      <div class="slide-inner">
+        <p class="eyebrow">Корпус исследования</p>
+        <h2>4 выступления<br>за 9 лет</h2>
+        <div class="grid grid-4">
+          <article class="talk-card">
+            <span class="talk-year">2001</span>
+            <h3>iPod</h3>
+            <p>Преобразование технической характеристики в образ личной свободы.</p>
+            <a href="#ipod">анализ</a>
+          </article>
+          <article class="talk-card">
+            <span class="talk-year">2005</span>
+            <h3>Stanford</h3>
+            <p>Личная история как источник доверия и эмоциональной связи.</p>
+            <a href="#stanford">анализ</a>
+          </article>
+          <article class="talk-card">
+            <span class="talk-year">2007</span>
+            <h3>iPhone</h3>
+            <p>Напряжение, повтор и демонстрация превращают анонс в событие.</p>
+            <a href="#iphone">анализ</a>
+          </article>
+          <article class="talk-card">
+            <span class="talk-year">2010</span>
+            <h3>iPad</h3>
+            <p>Аргумент о новой категории проверяется привычными сценариями.</p>
+            <a href="#ipad">анализ</a>
+          </article>
+        </div>
+        <p class="footnote">Каждое выступление представлено видеозаписью и первичным либо близким к первичному источником. Полный список ссылок находится на слайде 09.</p>
+      </div>
+      <span class="slide-num">03</span>
+      <button class="next" data-next="ipod">Далее</button>
+    </section>
+
+    <section class="slide speech" id="ipod" data-index="4">
+      <div class="slide-inner speech-layout">
+        <div>
+          <p class="eyebrow">Выступление 01 · 23.10.2001</p>
+          <h2 class="speech-title">iPod:<br>цифра становится образом</h2>
+          <span class="tag">Логос</span><span class="tag">Невербальное доказательство</span>
+          <p class="quote-block">«1,000 songs in your pocket»</p>
+          <div class="analysis-list">
+            <article>
+              <h3>Тезис</h3>
+              <p>Джобс доказывает ценность не термином «5 GB», а понятным результатом: тысяча песен рядом с человеком.</p>
+            </article>
+            <article>
+              <h3>Прием и цель</h3>
+              <p><strong>Наблюдение:</strong> формула «1,000 songs in your pocket» заменяет техническую характеристику ёмкости образом, который легко представить. <strong>Интерпретация:</strong> это конкретизация и краткий слоган. <strong>Цель:</strong> сделать преимущество понятным и запоминающимся.</p>
+            </article>
+            <article>
+              <h3>Невербальные средства</h3>
+              <p><strong>Что проверить на видео:</strong> момент, когда Джобс достаёт iPod из кармана. <strong>Интерпретация:</strong> предметная демонстрация поддерживает словесный образ и служит наглядным доказательством компактности. Укажите точный таймкод после просмотра вашей копии записи.</p>
+            </article>
+          </div>
+          <div class="triad"><p><b>Этос</b> — опыт создателя продукта.</p><p><b>Пафос</b> — образ личной музыкальной коллекции.</p><p><b>Логос</b> — ёмкость переведена в понятную пользу.</p></div>
+        </div>
+        <aside class="watch-prompt speech-video-prompt">
+          <p class="eyebrow">Видео для анализа</p>
+          <h3>iPod · 2001</h3>
+          
+        </aside>
+      </div>
+      <span class="slide-num">04</span>
+      <button class="next" data-next="stanford">Далее</button>
+    </section>
+
+    <section class="slide speech" id="stanford" data-index="5">
+      <div class="slide-inner speech-layout">
+        <div>
+          <p class="eyebrow">Выступление 02 · 12.06.2005</p>
+          <h2 class="speech-title">Stanford:<br>доверие через уязвимость</h2>
+          <span class="tag">Этос</span><span class="tag">Пафос</span><span class="tag">Сторителлинг</span>
+          <p class="quote-block">«Today I want to tell you three stories from my life.»</p>
+          <div class="analysis-list">
+            <article>
+              <h3>Тезис</h3>
+              <p><strong>Наблюдение:</strong> Джобс рассказывает о неудачах, уходе из Apple и болезни от первого лица. <strong>Интерпретация:</strong> личный опыт создаёт этос свидетеля, а не только статус руководителя. <strong>Цель:</strong> показать, что выводы основаны на пережитом опыте.</p>
+            </article>
+            <article>
+              <h3>Композиция</h3>
+              <p>Три короткие истории дают ясную рамку. В каждой есть проблема, личный опыт и сформулированный урок, поэтому речь легко удерживать в памяти.</p>
+            </article>
+            <article>
+              <h3>Невербальные средства</h3>
+              <p><strong>Что наблюдать:</strong> темп, паузы, положение рук и взгляд в конкретном фрагменте. <strong>Интерпретация:</strong> сдержанная подача может направлять внимание на содержание. Это аналитическая интерпретация, а не доказательство внутреннего состояния оратора. Добавьте проверенный таймкод после просмотра.</p>
+            </article>
+          </div>
+          <div class="triad"><p><b>Этос</b> — личный опыт от первого лица.</p><p><b>Пафос</b> — истории о потере, любви и конечности жизни.</p><p><b>Логос</b> — три истории организуют выводы в ясную структуру.</p></div>
+        </div>
+        <aside class="watch-prompt speech-video-prompt">
+          <p class="eyebrow">Видео для анализа</p>
+          <h3>Stanford · 2005</h3>
+          <div class="speech-video"><video controls preload="metadata" playsinline aria-label="Речь Стива Джобса в Stanford, 2005"><source src="media/steve-jobs-stanford-2005.mp4" type="video/mp4">Ваш браузер не поддерживает видео.</video></div>
+          <p class="video-caption">Локальное видео работает офлайн, если папка media сохранена рядом с HTML. <a href="https://www.youtube.com/watch?v=UF8uR6Z6KLc" target="_blank" rel="noopener noreferrer">Открыть оригинал ↗</a></p>
+        </aside>
+      </div>
+      <span class="slide-num">05</span>
+      <button class="next" data-next="iphone">Далее</button>
+    </section>
+
+    <section class="slide speech" id="iphone" data-index="6">
+      <div class="slide-inner speech-layout">
+        <div>
+          <p class="eyebrow">Выступление 03 · 09.01.2007</p>
+          <h2 class="speech-title">iPhone:<br>интрига, повтор, развязка</h2>
+          <span class="tag">Пафос</span><span class="tag">Логос</span><span class="tag">Повтор</span>
+          <p class="quote-block">«These are not three separate devices. This is one device.»</p>
+          <div class="analysis-list">
+            <article>
+              <h3>Тезис</h3>
+              <p><strong>Наблюдение:</strong> Джобс повторяет три функции — iPod, телефон и интернет-коммуникатор — перед раскрытием iPhone. <strong>Приём:</strong> трёхчастная конструкция, повтор и отложенная развязка. <strong>Эффект:</strong> аудитория сначала формирует ожидание, а затем переосмысливает перечисление как единый продукт.</p>
+            </article>
+            <article>
+              <h3>Прием и цель</h3>
+              <p>Триада и риторический вопрос «Are you getting it?» вовлекают аудиторию в совместное открытие. Логический вывод появляется после того, как зал уже сам сопоставил части.</p>
+            </article>
+            <article>
+              <h3>Невербальные средства</h3>
+              <p><strong>Что проверить:</strong> жесты, взгляд и паузу перед показом устройства в записи. <strong>Интерпретация:</strong> синхронизация речи с демонстрацией превращает утверждение в визуально проверяемый пример. Укажите точный таймкод после просмотра; не оценивайте реакцию зала без наблюдаемого подтверждения.</p>
+            </article>
+          </div>
+          <div class="triad"><p><b>Этос</b> — выступает как человек, отвечающий за продукт.</p><p><b>Пафос</b> — ожидание и кульминация раскрытия.</p><p><b>Логос</b> — объединение функций в одном устройстве.</p></div>
+        </div>
+        <aside class="watch-prompt speech-video-prompt">
+          <p class="eyebrow">Видео для анализа</p>
+          <h3>iPhone · 2007</h3>
+          
+        </aside>
+      </div>
+      <span class="slide-num">06</span>
+      <button class="next" data-next="ipad">Далее</button>
+    </section>
+
+    <section class="slide speech" id="ipad" data-index="7">
+      <div class="slide-inner speech-layout">
+        <div>
+          <p class="eyebrow">Выступление 04 · 27.01.2010</p>
+          <h2 class="speech-title">iPad:<br>сначала критерий, потом опыт</h2>
+          <span class="tag">Логос</span><span class="tag">Этос</span><span class="tag">Демонстрация</span>
+          <p class="quote-block">«A third category of device… has to be far better at some key tasks.»</p>
+          <div class="analysis-list">
+            <article>
+              <h3>Тезис</h3>
+              <p>Джобс формулирует условие существования нового устройства: оно должно выполнять ключевые задачи лучше ноутбука и смартфона. Так он заранее создает критерий оценки iPad.</p>
+            </article>
+            <article>
+              <h3>Прием и цель</h3>
+              <p><strong>Наблюдение:</strong> после формулировки критерия Джобс показывает веб, почту, фотографии, видео и книги. <strong>Приём:</strong> демонстрация по сценариям использования. <strong>Логос:</strong> зритель получает примеры, по которым может оценить заявленную пользу.</p>
+            </article>
+            <article>
+              <h3>Невербальные средства</h3>
+              <p><strong>Наблюдение:</strong> Джобс использует iPad сидя и выполняет действия на экране. <strong>Интерпретация:</strong> поза и демонстрация показывают контекст использования. Предположение о темпе или реакции аудитории следует подтверждать конкретным фрагментом видео.</p>
+            </article>
+          </div>
+          <div class="triad"><p><b>Этос</b> — позиция разработчика, представляющего продукт.</p><p><b>Пафос</b> — интерес к новой категории устройства.</p><p><b>Логос</b> — заявленный критерий и демонстрация задач.</p></div>
+        </div>
+        <aside class="watch-prompt speech-video-prompt">
+          <p class="eyebrow">Видео для анализа</p>
+          <h3>iPad · 2010</h3>
+          
+        </aside>
+      </div>
+      <span class="slide-num">07</span>
+      <button class="next" data-next="synthesis">Далее</button>
+    </section>
+
+    <section class="slide synthesis" id="synthesis" data-index="8">
+      <div class="slide-inner">
+        <p class="eyebrow">Общий вывод</p>
+        <h2>Уверенность<br>создается совпадением слов и действия</h2>
+        <div class="matrix">
+          <div class="matrix-row">
+            <b>Этос</b>
+            <p>Опыт создателя и готовность честно говорить о собственных ошибках.</p>
+            <p><b>Эффект:</b> аудитория видит эксперта, который отвечает за свой продукт и свои слова.</p>
+          </div>
+          <div class="matrix-row">
+            <b>Пафос</b>
+            <p>Личный сюжет, простые слова, интрига до раскрытия нового устройства.</p>
+            <p><b>Эффект:</b> слушатель эмоционально включается, прежде чем услышит все аргументы.</p>
+          </div>
+          <div class="matrix-row">
+            <b>Логос</b>
+            <p>Сравнение, измеримая польза и демонстрация вместо длинного списка свойств.</p>
+            <p><b>Эффект:</b> вывод можно проверить прямо во время выступления.</p>
+          </div>
+          <div class="matrix-row">
+            <b>Невербально</b>
+            <p>Открытая поза, точные жесты, паузы, работа с экраном и предметом.</p>
+            <p><b>Эффект:</b> тело подтверждает смысл речи и удерживает внимание.</p>
+          </div>
+        </div>
+        <p class="answer"><span>Контакт с аудиторией.</span> В выбранных записях нет отдельной сессии вопросов и ответов. Джобс поддерживает диалог иначе: задает аудитории вопросы, делает паузу для реакции и отвечает на возможные сомнения следующей демонстрацией.</p>
+      </div>
+      <span class="slide-num">08</span>
+      <button class="next" data-next="videos">Далее</button>
+    </section>
+
+        <section class="slide videos" id="videos" data-index="9">
+      <div class="slide-inner">
+        <p class="eyebrow">Офлайн-видеотека</p>
+        <h2>Речь, которая<br>работает без интернета.</h2>
+        <p class="lede">В архив включена одна локальная видеозапись — Stanford Commencement Address, 2005. Она воспроизводится прямо на странице сайта и не требует доступа к YouTube. Остальные три выступления анализируются по цитатам и указанным источникам, но их видеофайлы в проект не включены.</p>
+        <div class="video-grid single-video">
+          <div class="video-card featured local-video-card">
+            <span>2005 · ЭТОС / ПАФОС / ЛОГОС</span>
+            <h3>Stanford<br>Commencement Address</h3>
+            <p>Три истории о жизни, потере и поиске своего дела.</p>
+            <div class="local-video-frame"><video controls preload="metadata" playsinline aria-label="Локальная видеозапись речи Стива Джобса в Stanford в 2005 году"><source src="media/steve-jobs-stanford-2005.mp4" type="video/mp4">Ваш браузер не поддерживает видео HTML5. Попробуйте открыть проект в актуальной версии Chrome или Edge.</video></div>
+          </div>
+        </div>
+        <p class="footnote">Перед выступлением проверьте звук и запустите видео до начала защиты.</p>
+      </div>
+      <span class="slide-num">09</span>
+      <button class="next" data-next="sources">Далее</button>
+    </section>
+    <section class="slide sources" id="sources" data-index="10">
+      <div class="slide-inner">
+        <p class="eyebrow">Источники и итог</p>
+        <h2>Вывод для нашей<br>собственной речи</h2>
+        <p class="conclusion key-claim">Джобс убедителен, потому что строит выступление как путь: понятная проблема, один главный тезис, видимое доказательство и точная эмоция.</p>
+        <div class="grid grid-3">
+          <article class="lesson"><h3>1. Один образ</h3><p>Заменять технический факт человеческой пользой, которую можно представить сразу.</p></article>
+          <article class="lesson"><h3>2. Одна кульминация</h3><p>Создавать паузу перед главным выводом или демонстрацией, а не говорить в одном темпе.</p></article>
+          <article class="lesson"><h3>3. Одно доказательство</h3><p>Подтверждать тезис примером, жестом или предметом, чтобы слова не оставались абстракцией.</p></article>
+        </div>
+        <p class="eyebrow" style="margin-top:44px">Список источников</p>
+        <ol class="source-list">
+          <li><a href="https://www.apple.com/newsroom/2001/10/23Apple-Presents-iPod/" target="_blank" rel="noreferrer">Apple. «Apple Presents iPod»</a>, 23 октября 2001. Первичный источник для характеристик iPod и формулы «1,000 songs in your pocket».</li>
+          <li><a href="https://www.youtube.com/watch?v=kN0SVBCJqLs" target="_blank" rel="noreferrer">Steve Jobs introduces iPod in 2001</a>. Видеозапись выступления.</li>
+          <li><a href="https://news.stanford.edu/stories/2005/06/youve-got-find-love-jobs-says" target="_blank" rel="noreferrer">Stanford Report. «You’ve got to find what you love»</a>, 12 июня 2005. Подготовленный текст речи.</li>
+          <li><a href="https://www.youtube.com/watch?v=UF8uR6Z6KLc" target="_blank" rel="noreferrer">Stanford University. 2005 Commencement Address</a>. Официальная видеозапись.</li>
+          <li><a href="https://www.apple.com/newsroom/2007/01/09Apple-Reinvents-the-Phone-with-iPhone/" target="_blank" rel="noreferrer">Apple. «Apple Reinvents the Phone with iPhone»</a>, 9 января 2007. Первичный источник для анонса iPhone.</li>
+          <li><a href="https://www.youtube.com/watch?v=Av1gsGGeS1U" target="_blank" rel="noreferrer">iPhone Presentation, Macworld 2007</a>. Видеозапись полного выступления.</li>
+          <li><a href="https://www.apple.com/newsroom/2010/01/27Apple-Launches-iPad/" target="_blank" rel="noreferrer">Apple. «Apple Launches iPad»</a>, 27 января 2010. Первичный источник для анонса iPad.</li>
+          <li><a href="https://www.youtube.com/watch?v=QaEYIYJLVlw" target="_blank" rel="noreferrer">Steve Jobs introduces the original iPad</a>. Видеозапись выступления.</li>
+          <li><a href="https://owl.purdue.edu/owl/general_writing/academic_writing/rhetorical_situation/aristotles_rhetorical_situation.html" target="_blank" rel="noreferrer">Purdue OWL. Aristotle’s Rhetorical Situation</a>. Справочный источник по этосу, пафосу и логосу.</li>
+        </ol>
+        <p class="disclosure">Метод: цитаты и даты сверяйте с указанными источниками; таймкоды добавьте после просмотра именно той версии видео, которую будете показывать. Невербальные выводы — интерпретация наблюдаемого поведения, а не утверждение о намерениях спикера. Для защиты используйте стрелки ↑ и ↓ или навигацию справа. Для воспроизведения видео интернет не нужен: встроен только файл Stanford 2005. Остальные видеоссылки в списке источников служат справочными ссылками и для показа не требуются. Всего 10 разделов из разрешённых 10.</p>
+      </div>
+      <span class="slide-num">10</span>
+      <button class="next" data-next="cover">В начало</button>
+    </section>
+  </main>
+
+  <script>
+    const slides = [...document.querySelectorAll('.slide')];
+    const dots = [...document.querySelectorAll('.dot')];
+    const current = document.querySelector('#current-slide');
+    const fill = document.querySelector('#progress-fill');
+    let activeIndex = 0;
+
+    function activate(index) {
+      activeIndex = index;
+      const number = String(index + 1).padStart(2, '0');
+      current.textContent = number;
+      fill.style.width = `${((index + 1) / slides.length) * 100}%`;
+      dots.forEach((dot, i) => dot.classList.toggle('active', i === index));
+    }
+
+    function goTo(id) {
+      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    document.querySelectorAll('[data-next], .dot').forEach(control => {
+      control.addEventListener('click', () => goTo(control.dataset.next || control.dataset.target));
+    });
+
+    const observer = new IntersectionObserver(entries => {
+      const mostVisible = entries
+        .filter(entry => entry.isIntersecting)
+        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+      // Keep every section's content visible; observer only updates navigation progress.
+      if (mostVisible) activate(slides.indexOf(mostVisible.target));
+    }, { threshold: [0.45, 0.65] });
+    slides.forEach(slide => observer.observe(slide));
+
+    window.addEventListener('keydown', event => {
+      if (event.target.matches('a, button, iframe')) return;
+      if (event.key === 'ArrowDown' || event.key === 'ArrowRight' || event.key === 'PageDown') {
+        event.preventDefault();
+        goTo(slides[Math.min(activeIndex + 1, slides.length - 1)].id);
+      }
+      if (event.key === 'ArrowUp' || event.key === 'ArrowLeft' || event.key === 'PageUp') {
+        event.preventDefault();
+        goTo(slides[Math.max(activeIndex - 1, 0)].id);
+      }
+      if (event.key === 'Home') { event.preventDefault(); goTo(slides[0].id); }
+      if (event.key === 'End') { event.preventDefault(); goTo(slides[slides.length - 1].id); }
+    });
+
+    const fullscreenButton = document.querySelector('#fullscreen-toggle');
+    const fullscreenLabel = fullscreenButton.querySelector('span');
+    async function toggleFullscreen() {
+      try {
+        if (!document.fullscreenElement) await document.documentElement.requestFullscreen();
+        else await document.exitFullscreen();
+      } catch (error) {
+        fullscreenLabel.textContent = 'Полный экран недоступен';
+        setTimeout(() => { fullscreenLabel.textContent = document.fullscreenElement ? 'Выйти из полного экрана' : 'На весь экран'; }, 2200);
+      }
+    }
+    fullscreenButton.addEventListener('click', toggleFullscreen);
+    document.addEventListener('fullscreenchange', () => {
+      const active = Boolean(document.fullscreenElement);
+      fullscreenButton.setAttribute('aria-pressed', String(active));
+      fullscreenButton.setAttribute('aria-label', active ? 'Выйти из полноэкранного режима' : 'Развернуть сайт на весь экран');
+      fullscreenLabel.textContent = active ? 'Выйти из полного экрана' : 'На весь экран';
+    });
+
+    activate(0);
+  </script>
+</body>
+</html>
